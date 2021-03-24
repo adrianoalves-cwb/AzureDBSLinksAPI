@@ -71,26 +71,26 @@ namespace DBSLinksAPI.Controllers
 				return BadRequest(ModelState);
 			}
 
-			if (model.DealerName == null)
+			if (ValidateRequiredFields(model) == false)
 			{
-				return BadRequest("Unable to update the team. Required fields missing");
+				return BadRequest("Unable to create the Dealer. Required fields missing");
 			}
 
 			var dealer = await (from c in _db.Dealers
-							  where c.DealerName == model.DealerName
+							  where c.DealerName == model.DealerName || c.CTDI == model.CTDI
 							  select c)
 								.AsNoTracking()
 								.FirstOrDefaultAsync();
 
 			if (dealer != null)
 			{
-				return StatusCode(409, "Unable to create the Dealer . The teamUserName or ComputerName already exists in teams");
+				return StatusCode(409, "Unable to create the Dealer . The DealerName or CTDI already exists in Dealers");
 			}
 
 			await _db.Dealers.AddAsync(model);
 			await _db.SaveChangesAsync();
 
-			return StatusCode(201, "The team has been Created");
+			return StatusCode(201, "The Dealer has been Created");
 		}
 
 		//UPDATE: api/v1/dealer/5
@@ -98,33 +98,33 @@ namespace DBSLinksAPI.Controllers
 		[HttpPut("{id:int}")]
 		[Authorize]
 		//[Route("")]
-		public async Task<ActionResult<Dealer>> Update(int id, [FromBody] Team model)
+		public async Task<ActionResult<Dealer>> Update(int id, [FromBody] Dealer model)
 		{
 			if (ModelState.IsValid == false)
 			{
 				return BadRequest(ModelState);
 			}
 
-			if (id != model.TeamId)
+			if (id != model.DealerId)
 			{
 				return BadRequest();
 			}
 
-			if (model.TeamName == null)
+			if (ValidateRequiredFields(model) == false)
 			{
-				return BadRequest("Unable to update the team. Required fields missing");
+				return BadRequest("Unable to create the Dealer. Required fields missing");
 			}
 
-			var team = await (from c in _db.Dealers
-							  where c.TeamId != model.TeamId
-								&& c.TeamName == model.TeamName
+			var dealer = await (from c in _db.Dealers
+							  where c.DealerId != model.DealerId
+								&& c.DealerName == model.DealerName
 							  select c)
 								.AsNoTracking()
 								.FirstOrDefaultAsync();
 
-			if (team != null)
+			if (dealer != null)
 			{
-				return StatusCode(409, "Unable to update the team. The teamUserName or ComputerName already exists in teams");
+				return StatusCode(409, "Unable to update the Dealer. The record already exists in Dealers");
 			}
 
 			_db.Dealers.Update(model);
@@ -152,6 +152,24 @@ namespace DBSLinksAPI.Controllers
 			await _db.SaveChangesAsync();
 
 			return Ok("Delete successfull");
+		}
+
+		private bool ValidateRequiredFields(Dealer dealer)
+		{
+			if (dealer.DealerId <= 0 || dealer.DealerName == null || dealer.MainDealerId <=0 || dealer.CountryCode <= 0 || dealer.CTDI <= 0)
+			{
+				return false;
+			}
+
+			var country = _db.Countries
+						.AsNoTracking()
+						.FirstOrDefault(u => u.CountryCode == dealer.CountryCode);
+
+			if (country == null)
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 }
