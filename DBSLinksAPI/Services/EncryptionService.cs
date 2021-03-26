@@ -8,19 +8,17 @@ namespace DBSLinksAPI.Services
 {
     public class EncryptionServices
     {
-        private static Aes CreateCipher()
+        private static Aes CreateCipher(string AesKey)
         {
             Aes cipher = Aes.Create();  
             cipher.Padding = PaddingMode.ISO10126;
-            cipher.Key = HexToByteArray(Settings.AesKey);
+            cipher.Key = HexToByteArray(AesKey);
             return cipher;
         }
 
-        public static string EncryptString(string PlainText)
+        public static string EncryptString(string PlainText, string AesKey)
         {
-            Aes cipher = CreateCipher();
-
-            //CypherObj cypherObj = new CypherObj();
+            Aes cipher = CreateCipher(AesKey);
 
             string IV = Convert.ToBase64String(cipher.IV);
 
@@ -32,14 +30,14 @@ namespace DBSLinksAPI.Services
             return IV + " " + CypherText;
         }
 
-        public static string DecryptString(string CipherText)
+        public static string DecryptString(string CipherText, string AesKey)
         {
             string[] tempCipherText = CipherText.Split(' ');
 
             string IV = tempCipherText[0].ToString();
             CipherText = tempCipherText[1].ToString();
 
-            Aes cipher = CreateCipher();
+            Aes cipher = CreateCipher(AesKey);
 
             cipher.IV = Convert.FromBase64String(IV);
 
@@ -50,45 +48,6 @@ namespace DBSLinksAPI.Services
             return Encoding.UTF8.GetString(plainText);
         }
 
-        //public static string EncryptString(string message)
-        //{
-        //    var aes = new AesCryptoServiceProvider();
-        //    var iv = aes.IV;
-        //    byte[] key = HexToByteArray(Settings.AesKey);
-
-        //    using (var memStream = new System.IO.MemoryStream())
-        //    {
-        //        memStream.Write(iv, 0, iv.Length);  // Add the IV to the first 16 bytes of the encrypted value
-        //        using (var cryptStream = new CryptoStream(memStream, aes.CreateEncryptor(key, aes.IV), CryptoStreamMode.Write))
-        //        {
-        //            using (var writer = new System.IO.StreamWriter(cryptStream))
-        //            {
-        //                writer.Write(message);
-        //            }
-        //        }
-        //        var buf = memStream.ToArray();
-        //        return Convert.ToBase64String(buf, 0, buf.Length);
-        //    }
-        //}
-
-        //public static string DecryptString(string encryptedValue)
-        //{
-        //    byte[] key = HexToByteArray(Settings.AesKey);
-        //    var bytes = Convert.FromBase64String(encryptedValue);
-        //    var aes = new AesCryptoServiceProvider();
-        //    using (var memStream = new System.IO.MemoryStream(bytes))
-        //    {
-        //        var iv = new byte[16];
-        //        memStream.Read(iv, 0, 16);  // Pull the IV from the first 16 bytes of the encrypted value
-        //        using (var cryptStream = new CryptoStream(memStream, aes.CreateDecryptor(key, iv), CryptoStreamMode.Read))
-        //        {
-        //            using (var reader = new System.IO.StreamReader(cryptStream))
-        //            {
-        //                return reader.ReadToEnd();
-        //            }
-        //        }
-        //    }
-        //}
         private static byte[] HexToByteArray(string hexString)
         {
             if (0 != (hexString.Length % 2))

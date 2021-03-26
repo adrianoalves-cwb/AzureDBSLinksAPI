@@ -404,3 +404,5 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 DBSLinksAPI/appsettings.json
+DBSLinksAPI/appsettings.json
+*.json

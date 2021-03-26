@@ -43,7 +43,7 @@ namespace DBSLinksAPI.Controllers
                 //token = token
  
             };
-        }*/
+        }
 
         [HttpGet]
         [Route("anonymous")]
@@ -69,6 +69,6 @@ namespace DBSLinksAPI.Controllers
         [Route("manager")]
         [Authorize(Roles = "manager")]
         public string Manager() => "Gerente";
-
+        */
     }
 }

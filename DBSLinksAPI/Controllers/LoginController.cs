@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace DBSLinksAPI.Controllers
 {
@@ -18,10 +20,12 @@ namespace DBSLinksAPI.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
+        private readonly IConfiguration _configuration;
 
-        public LoginController(ApplicationDbContext db)
+        public LoginController(ApplicationDbContext db, IConfiguration configuration)
         {
             _db = db;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -34,9 +38,11 @@ namespace DBSLinksAPI.Controllers
                 LoginHistoryService.WriteToLoginHistory(model, "Failed", "BadRequest", _db);
                 return BadRequest(ModelState);
             }
+            string AesKey = _configuration.GetValue<string>("Services:AesKey");
 
-            //string unencryptedUserName = EncryptionServices.DecryptString(model.UserName);
-            //string encryptedComputerName = EncryptionServices.EncryptString(model.ComputerName);
+            //string encryptedComputerName = EncryptionServices.EncryptString(model.ComputerName, AesKey);
+            //string unencryptedUserName = EncryptionServices.DecryptString(encryptedComputerName, AesKey);
+
 
             if (model.UserName == null || model.ComputerName == null)
             {
@@ -56,7 +62,10 @@ namespace DBSLinksAPI.Controllers
             }
 
             LoginHistoryService.WriteToLoginHistory(model, "Successful", "Ok", _db);
-            var token = TokenService.GenerateToken(loginDetails);
+
+            string tokenKey = _configuration.GetValue<string>("Services:TokenKey");
+            var token = TokenService.GenerateToken(loginDetails, tokenKey);
+
             return Ok(token);
 
         }

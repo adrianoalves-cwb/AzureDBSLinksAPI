@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DBSLinksAPI.DBContext;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using DBSLinksAPI.Services;
 
 namespace DBSLinksAPI
 {
@@ -39,7 +40,7 @@ namespace DBSLinksAPI
                     .AddNewtonsoftJson();
 
             //Token Key
-            var key = Encoding.UTF8.GetBytes(Settings.TokenKey);
+            var key = Encoding.UTF8.GetBytes(Configuration.GetSection("Services").GetSection("TokenKey").Value);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -19,5 +19,6 @@
   <ItemGroup>
     <Folder Include="DBContext\" />
     <Folder Include="Services\" />
+    <Folder Include="Utilities\" />
   </ItemGroup>
 </Project>
