@@ -32,7 +32,14 @@ namespace DBSLinksAPI.Controllers
 							   select new Dealer
 							   {
 								   DealerId = t.DealerId,
-								   DealerName = t.DealerName
+								   MainDealerId = t.MainDealerId,
+								   CountryCode = t.CountryCode,
+								   CTDI = t.CTDI,
+								   DealerName = t.DealerName,
+								   Branch = t.Branch,
+								   PhoneNumber = t.PhoneNumber,
+								   BaldoPartner = t.BaldoPartner,
+								   IsActive = t.IsActive
 							   })
 							   .AsNoTracking()
 							   .ToListAsync();
