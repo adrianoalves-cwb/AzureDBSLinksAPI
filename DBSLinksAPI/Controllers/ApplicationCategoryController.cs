@@ -73,7 +73,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (model.ApplicationCategoryName == null)
 			{
-				return BadRequest("Unable to update the ApplicationCategory. Required fields missing");
+				return BadRequest("Unable to update the Record. Required fields missing");
 			}
 
 			var applicationCategory = await (from c in _db.ApplicationCategories
@@ -84,13 +84,13 @@ namespace DBSLinksAPI.Controllers
 
 			if (applicationCategory != null)
 			{
-				return StatusCode(409, "Unable to create the ApplicationCategory. The ApplicationName already exists in teams");
+				return StatusCode(409, "Unable to create the Record. The Record already exists in the Database");
 			}
 
 			await _db.ApplicationCategories.AddAsync(model);
 			await _db.SaveChangesAsync();
 
-			return StatusCode(201, "The ApplicationCategory has been Created");
+			return StatusCode(201, "The Record has been Created");
 		}
 
 		//UPDATE: api/v1/applicationcategory/5
@@ -112,7 +112,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (model.ApplicationCategoryName == null)
 			{
-				return BadRequest("Unable to update the ApplicationCategory. Required field missing");
+				return BadRequest("Unable to update the Record. Required field missing");
 			}
 
 			var applicationCategory = await (from c in _db.ApplicationCategories
@@ -124,7 +124,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (applicationCategory != null)
 			{
-				return StatusCode(409, "Unable to update the Application. The ApplicationCategoryName already exists in teams");
+				return StatusCode(409, "Unable to update the Record. The Record already exists in teams");
 			}
 
 			_db.ApplicationCategories.Update(model);
@@ -139,16 +139,16 @@ namespace DBSLinksAPI.Controllers
 		[Authorize]
 		public async Task<IActionResult> Delete(int id)
 		{
-			var applicationCategory = await _db.ApplicationCategories
+			var model = await _db.ApplicationCategories
 							.AsNoTracking()
 							.FirstOrDefaultAsync(u => u.ApplicationCategoryId == id);
 
-			if (applicationCategory == null)
+			if (model == null)
 			{
 				return StatusCode(404, "The Record could not be found!");
 			}
 
-			_db.ApplicationCategories.Remove(applicationCategory);
+			_db.ApplicationCategories.Remove(model);
 			await _db.SaveChangesAsync();
 
 			return Ok("Delete successfull");
