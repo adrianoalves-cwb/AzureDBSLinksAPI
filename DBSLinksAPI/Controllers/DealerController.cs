@@ -146,16 +146,16 @@ namespace DBSLinksAPI.Controllers
 		[Authorize]
 		public async Task<IActionResult> Delete(int id)
 		{
-			var team = await _db.Dealers
+			var model = await _db.Dealers
 							.AsNoTracking()
 							.FirstOrDefaultAsync(u => u.DealerId == id);
 
-			if (team == null)
+			if (model == null)
 			{
 				return StatusCode(404, "The Record could not be found!");
 			}
 
-			_db.Dealers.Remove(team);
+			_db.Dealers.Remove(model);
 			await _db.SaveChangesAsync();
 
 			return Ok("Delete successfull");
