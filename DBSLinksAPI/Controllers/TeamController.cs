@@ -73,7 +73,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (model.TeamName == null)
 			{
-				return BadRequest("Unable to update the team. Required fields missing");
+				return BadRequest("Unable to update the Record. Required fields missing");
 			}
 
 			var team = await (from c in _db.Teams
@@ -84,13 +84,13 @@ namespace DBSLinksAPI.Controllers
 
 			if (team != null)
 			{
-				return StatusCode(409, "Unable to create the team. The teamUserName or ComputerName already exists in teams");
+				return StatusCode(409, "Unable to create the Record. The Record already exists in the Database");
 			}
 
 			await _db.Teams.AddAsync(model);
 			await _db.SaveChangesAsync();
 
-			return StatusCode(201, "The team has been Created");
+			return StatusCode(201, "The Record has been Created");
 		}
 
 		//UPDATE: api/v1/team/5
@@ -112,7 +112,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (model.TeamName == null)
 			{
-				return BadRequest("Unable to update the team. Required fields missing");
+				return BadRequest("Unable to update the Record. Required fields missing");
 			}
 
 			var team = await (from c in _db.Teams
@@ -124,7 +124,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (team != null)
 			{
-				return StatusCode(409, "Unable to update the team. The teamUserName or ComputerName already exists in teams");
+				return StatusCode(409, "Unable to update the Record. The Record already exists in the Database");
 			}
 
 			_db.Teams.Update(model);
@@ -139,16 +139,16 @@ namespace DBSLinksAPI.Controllers
 		[Authorize]
 		public async Task<IActionResult> Delete(int id)
 		{
-			var team = await _db.Teams
+			var model = await _db.Teams
 							.AsNoTracking()
 							.FirstOrDefaultAsync(u => u.TeamId == id);
 
-			if (team == null)
+			if (model == null)
 			{
 				return StatusCode(404, "The Record could not be found!");
 			}
 
-			_db.Teams.Remove(team);
+			_db.Teams.Remove(model);
 			await _db.SaveChangesAsync();
 
 			return Ok("Delete successfull");
