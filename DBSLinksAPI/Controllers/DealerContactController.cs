@@ -149,12 +149,12 @@ namespace DBSLinksAPI.Controllers
 							.AsNoTracking()
 							.FirstOrDefaultAsync(u => u.DealerContactId == id);
 
-			if (team == null)
+			if (dealerContact == null)
 			{
 				return StatusCode(404, "The Record could not be found!");
 			}
 
-			_db.DealerContacts.Remove(team);
+			_db.DealerContacts.Remove(dealerContact);
 			await _db.SaveChangesAsync();
 
 			return Ok("Delete successfull");
