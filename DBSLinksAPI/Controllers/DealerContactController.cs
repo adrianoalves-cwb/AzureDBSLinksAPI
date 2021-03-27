@@ -82,21 +82,21 @@ namespace DBSLinksAPI.Controllers
 				return BadRequest("Unable to create the Dealer. Required fields missing");
 			}
 
-			var dealer = await (from c in _db.DealerContacts
-								where c.DealerName == model.DealerName || c.CTDI == model.CTDI
+			var dealerContact = await (from c in _db.DealerContacts
+								where c.ContactName == model.ContactName
 								select c)
 								.AsNoTracking()
 								.FirstOrDefaultAsync();
 
-			if (dealer != null)
+			if (dealerContact != null)
 			{
-				return StatusCode(409, "Unable to create the Dealer . The DealerName or CTDI already exists in Dealers");
+				return StatusCode(409, "Unable to create the DealerContact . The ContactName already exists in Dealers");
 			}
 
 			await _db.DealerContacts.AddAsync(model);
 			await _db.SaveChangesAsync();
 
-			return StatusCode(201, "The Dealer has been Created");
+			return StatusCode(201, "The DealerContact has been Created");
 		}
 
 		//UPDATE: api/v1/dealercontact/5
@@ -104,33 +104,33 @@ namespace DBSLinksAPI.Controllers
 		[HttpPut("{id:int}")]
 		[Authorize]
 		//[Route("")]
-		public async Task<ActionResult<Dealer>> Update(int id, [FromBody] Dealer model)
+		public async Task<ActionResult<DealerContact>> Update(int id, [FromBody] DealerContact model)
 		{
 			if (ModelState.IsValid == false)
 			{
 				return BadRequest(ModelState);
 			}
 
-			if (id != model.DealerId)
+			if (id != model.DealerContactId)
 			{
 				return BadRequest();
 			}
 
 			if (ValidateRequiredFields(model) == false)
 			{
-				return BadRequest("Unable to create the Dealer. Required fields missing");
+				return BadRequest("Unable to create the DealerContact. Required fields missing");
 			}
 
-			var dealer = await (from c in _db.DealerContacts
-								where c.DealerId != model.DealerId
-								  && c.DealerName == model.DealerName
+			var dealerContact = await (from c in _db.DealerContacts
+								where c.DealerContactId != model.DealerContactId
+								  && c.ContactName == model.ContactName
 								select c)
 								.AsNoTracking()
 								.FirstOrDefaultAsync();
 
-			if (dealer != null)
+			if (dealerContact != null)
 			{
-				return StatusCode(409, "Unable to update the Dealer. The record already exists in Dealers");
+				return StatusCode(409, "Unable to update the DealerContact. The record already exists in DealerContacts");
 			}
 
 			_db.DealerContacts.Update(model);
@@ -145,9 +145,9 @@ namespace DBSLinksAPI.Controllers
 		[Authorize]
 		public async Task<IActionResult> Delete(int id)
 		{
-			var team = await _db.DealerContacts
+			var dealerContact = await _db.DealerContacts
 							.AsNoTracking()
-							.FirstOrDefaultAsync(u => u.DealerId == id);
+							.FirstOrDefaultAsync(u => u.DealerContactId == id);
 
 			if (team == null)
 			{
