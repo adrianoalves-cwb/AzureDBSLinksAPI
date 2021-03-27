@@ -96,7 +96,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (ValidateRequiredFields(model) == false)
 			{
-				return BadRequest("Unable to create the Contact. Required fields missing");
+				return BadRequest("Unable to create the Record. Required fields missing");
 			}
 
 			var contact = await (from c in _db.Contacts
@@ -107,13 +107,13 @@ namespace DBSLinksAPI.Controllers
 
 			if (contact != null)
 			{
-				return StatusCode(409, "Unable to create the Contact. The ContactUserName or ComputerName already exists in Contacts");
+				return StatusCode(409, "Unable to create the Record. The Record already exists in the Database");
 			}
 
 			await _db.Contacts.AddAsync(model);
 			await _db.SaveChangesAsync();
 
-			return StatusCode(201, "The Contact has been Created");
+			return StatusCode(201, "The Record has been Created");
 		}
 
 		//UPDATE: api/v1/contact/5
@@ -135,7 +135,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (ValidateRequiredFields(model) == false)
 			{
-				return BadRequest("Unable to update the Contact. Required fields missing");
+				return BadRequest("Unable to update the Record. Required fields missing");
 			}
 
 			var contact = await (from c in _db.Contacts
@@ -147,7 +147,7 @@ namespace DBSLinksAPI.Controllers
 
 			if (contact != null)
 			{
-				return StatusCode(409, "Unable to update the Contact. The ContactUserName or ComputerName already exists in Contacts");
+				return StatusCode(409, "Unable to update the Record. The record already exists in the Database");
 			}
 
 			_db.Contacts.Update(model);
@@ -162,16 +162,16 @@ namespace DBSLinksAPI.Controllers
 		[Authorize]
 		public async Task<IActionResult> Delete(int id)
 		{
-			var contact = await _db.Contacts
+			var model = await _db.Contacts
 							.AsNoTracking()
 							.FirstOrDefaultAsync(u => u.ContactId == id);
 
-			if (contact == null)
+			if (model == null)
 			{
 				return StatusCode(404, "The Record could not be found!");
 			}
 
-			_db.Contacts.Remove(contact);
+			_db.Contacts.Remove(model);
 			await _db.SaveChangesAsync();
 
 			return Ok("Delete successfull");
