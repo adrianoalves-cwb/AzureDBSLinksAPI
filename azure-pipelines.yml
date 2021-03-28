@@ -22,8 +22,7 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: qetza.replacetokens.replacetokens-task.replacetokens@3
-  displayName: 'Replace tokens'
+- task: replacetokens@3
   inputs:
     targetFiles: '**/*.json'
     encoding: 'auto'
