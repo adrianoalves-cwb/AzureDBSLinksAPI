@@ -16,7 +16,7 @@ using Microsoft.Extensions.Configuration;
 namespace DBSLinksAPI.Controllers
 {
     [ApiController]
-    [Route("v1/login")]
+    [Route("api/v1/login")]
     public class LoginController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
