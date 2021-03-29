@@ -11,7 +11,7 @@ using System.Collections.Generic;
 namespace DBSLinksAPI.Controllers
 {
 	[ApiController]
-	[Route("v1/dealercontact")]
+	[Route("api/v1/dealercontact")]
 	public class DealerContactController : ControllerBase
 	{
 		private readonly ApplicationDbContext _db;
