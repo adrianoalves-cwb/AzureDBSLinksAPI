@@ -20,17 +20,12 @@ namespace DBSLinksAPI.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
-        //private readonly IConfiguration _configuration;
-        /*
+        private readonly IConfiguration _configuration;
+
         public LoginController(ApplicationDbContext db, IConfiguration configuration)
         {
             _db = db;
             _configuration = configuration;
-        }*/
-
-        public LoginController(ApplicationDbContext db)
-        {
-            _db = db;
         }
 
         [HttpPost]
@@ -54,11 +49,13 @@ namespace DBSLinksAPI.Controllers
                 LoginHistoryService.WriteToLoginHistory(model, "Failed", "Username or ComputerName is null", _db);
                 return Unauthorized();
             }
-            
-            var loginDetails = await _db.Logins
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(u => u.UserName == model.UserName
-                                               && u.ComputerName == model.ComputerName);
+
+            var loginDetails = await (from c in _db.Logins
+                              where c.UserName == model.UserName
+                              && c.ComputerName == model.ComputerName
+                              select c)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync();
 
             if (loginDetails == null)
             {
@@ -68,11 +65,11 @@ namespace DBSLinksAPI.Controllers
 
             LoginHistoryService.WriteToLoginHistory(model, "Successful", "Ok", _db);
 
-            //string tokenKey = _configuration.GetValue<string>("Services:TokenKey");
-            //var token = TokenService.GenerateToken(loginDetails, tokenKey);
+            string tokenKey = _configuration.GetValue<string>("Services:TokenKey");
+            var token = TokenService.GenerateToken(loginDetails, tokenKey);
 
-            //return Ok(token);
-            return Ok();
+            return Ok(token);
+            
         }
     }
 }
