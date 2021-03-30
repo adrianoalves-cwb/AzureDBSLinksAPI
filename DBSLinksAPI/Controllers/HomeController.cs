@@ -12,10 +12,6 @@ namespace DBSLinksAPI.Controllers
     [Route("api/v1/home")]
     public class HomeController: ControllerBase
     {
-        [HttpGet]
-        [Route("anonymous")]
-        [AllowAnonymous]
-        public string Anonymous() => "GET - Anônimo";
 
         /*
         [HttpPost]
