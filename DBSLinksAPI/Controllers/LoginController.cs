@@ -20,12 +20,17 @@ namespace DBSLinksAPI.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
-        private readonly IConfiguration _configuration;
-
+        //private readonly IConfiguration _configuration;
+        /*
         public LoginController(ApplicationDbContext db, IConfiguration configuration)
         {
             _db = db;
             _configuration = configuration;
+        }*/
+
+        public LoginController(ApplicationDbContext db)
+        {
+            _db = db;
         }
 
         [HttpPost]
@@ -38,7 +43,7 @@ namespace DBSLinksAPI.Controllers
                 LoginHistoryService.WriteToLoginHistory(model, "Failed", "BadRequest", _db);
                 return BadRequest(ModelState);
             }
-            string AesKey = _configuration.GetValue<string>("Services:AesKey");
+            //string AesKey = _configuration.GetValue<string>("Services:AesKey");
 
             //string encryptedComputerName = EncryptionServices.EncryptString(model.ComputerName, AesKey);
             //string unencryptedUserName = EncryptionServices.DecryptString(encryptedComputerName, AesKey);
@@ -63,11 +68,11 @@ namespace DBSLinksAPI.Controllers
 
             LoginHistoryService.WriteToLoginHistory(model, "Successful", "Ok", _db);
 
-            string tokenKey = _configuration.GetValue<string>("Services:TokenKey");
-            var token = TokenService.GenerateToken(loginDetails, tokenKey);
+            //string tokenKey = _configuration.GetValue<string>("Services:TokenKey");
+            //var token = TokenService.GenerateToken(loginDetails, tokenKey);
 
-            return Ok(token);
-
+            //return Ok(token);
+            return Ok();
         }
     }
 }
