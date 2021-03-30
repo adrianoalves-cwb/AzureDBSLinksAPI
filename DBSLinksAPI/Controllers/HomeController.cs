@@ -9,9 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DBSLinksAPI.Controllers
 {
-    [Route("v1/account")]
+    [Route("api/v1/home")]
     public class HomeController: ControllerBase
     {
+        [HttpGet]
+        [Route("anonymous")]
+        [AllowAnonymous]
+        public string Anonymous() => "GET - Anônimo";
+
         /*
         [HttpPost]
         [Route("login")]
@@ -19,7 +24,7 @@ namespace DBSLinksAPI.Controllers
         public async Task<ActionResult<dynamic>> Authenticate([FromBody]User model)
         {
             string encryptedText = EncryptionServices.EncryptString(model.StringtoEncrypt);
-        
+
             //var BackToPlainText = EncryptionServices.DecryptAsync(cypherObj.CypherText, cypherObj.IV);
 
 
@@ -41,7 +46,7 @@ namespace DBSLinksAPI.Controllers
             {
                 //user = encryptedText,
                 //token = token
- 
+
             };
         }
 
