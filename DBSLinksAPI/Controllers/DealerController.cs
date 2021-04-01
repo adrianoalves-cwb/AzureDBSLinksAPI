@@ -25,7 +25,7 @@ namespace DBSLinksAPI.Controllers
 		//GET: api/v1/dealer
 
 		[HttpGet]
-		//[Authorize]
+		[Authorize]
 		public async Task<ActionResult<List<Dealer>>> Get()
 		{
 			var model = await (from t in _db.Dealers
