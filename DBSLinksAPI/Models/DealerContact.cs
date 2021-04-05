@@ -17,5 +17,12 @@ namespace DBSLinksAPI.Models
         public string Email { get; set; }
         public string JobRole { get; set; }
         public string Department { get; set; }
+        public int CountryId { get; set; }
+
+        [NotMapped]
+        public string DealerName { get; set; }
+ 
+        [NotMapped]
+        public string CountryName { get; set; }
     }
 }
