@@ -18,5 +18,8 @@ namespace DBSLinksAPI.Models
         public string PhoneNumber { get; set; }
         public string BaldoPartner { get; set; }
         public Boolean IsActive { get; set; }
+
+        [NotMapped]
+        public string CountryName { get; set; }
     }
 }
