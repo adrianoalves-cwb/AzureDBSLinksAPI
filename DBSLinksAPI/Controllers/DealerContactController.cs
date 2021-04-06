@@ -62,9 +62,26 @@ namespace DBSLinksAPI.Controllers
 		[Authorize]
 		public async Task<ActionResult<DealerContact>> Get(int id)
 		{
-			var model = await _db.DealerContacts
-						.AsNoTracking()
-						.FirstOrDefaultAsync(u => u.DealerContactId == id);
+			var model = await (from d in _db.DealerContacts
+							   join c in _db.Countries
+							   on d.CountryId equals c.CountryId
+							   join n in _db.Dealers
+							   on d.MainDealerId equals n.CTDI
+							   select new DealerContact
+							   {
+								   DealerContactId = d.DealerContactId,
+								   MainDealerId = d.MainDealerId,
+								   ContactName = d.ContactName,
+								   PhoneNumber = d.PhoneNumber,
+								   CellPhone = d.CellPhone,
+								   Email = d.Email,
+								   JobRole = d.JobRole,
+								   Department = d.Department,
+								   DealerName = n.DealerName,
+								   CountryName = c.CountryName
+							   })
+							.AsNoTracking()
+							.FirstOrDefaultAsync(u => u.DealerContactId == id);
 
 			if (model != null)
 			{
