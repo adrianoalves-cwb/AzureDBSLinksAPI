@@ -29,6 +29,8 @@ namespace DBSLinksAPI.Controllers
 		public async Task<ActionResult<List<Dealer>>> Get()
 		{
 			var model = await (from t in _db.Dealers
+							   join c in _db.Countries
+							   on t.CountryCode equals c.CountryCode
 							   select new Dealer
 							   {
 								   DealerId = t.DealerId,
@@ -39,7 +41,8 @@ namespace DBSLinksAPI.Controllers
 								   Branch = t.Branch,
 								   PhoneNumber = t.PhoneNumber,
 								   BaldoPartner = t.BaldoPartner,
-								   IsActive = t.IsActive
+								   IsActive = t.IsActive,
+								   CountryName = c.CountryName
 							   })
 							   .AsNoTracking()
 							   .ToListAsync();
@@ -56,9 +59,24 @@ namespace DBSLinksAPI.Controllers
 		[Authorize]
 		public async Task<ActionResult<Dealer>> Get(int id)
 		{
-			var model = await _db.Dealers
-						.AsNoTracking()
-						.FirstOrDefaultAsync(u => u.DealerId == id);
+			var model = await (from t in _db.Dealers
+							   join c in _db.Countries
+							   on t.CountryCode equals c.CountryCode
+							   select new Dealer
+							   {
+								   DealerId = t.DealerId,
+								   MainDealerId = t.MainDealerId,
+								   CountryCode = t.CountryCode,
+								   CTDI = t.CTDI,
+								   DealerName = t.DealerName,
+								   Branch = t.Branch,
+								   PhoneNumber = t.PhoneNumber,
+								   BaldoPartner = t.BaldoPartner,
+								   IsActive = t.IsActive,
+								   CountryName = c.CountryName
+							   })
+							.AsNoTracking()
+							.FirstOrDefaultAsync(u => u.DealerId == id);
 
 			if (model != null)
 			{
